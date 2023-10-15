@@ -1,0 +1,111 @@
+import { useLoaderData } from "react-router-dom";
+import swal from "sweetalert";
+
+const UpdateCoffee = () => {
+
+    const loadedProduct = useLoaderData()
+
+    const handleUpdateCoffee = e => {
+        e.preventDefault()
+        const form = new FormData(e.currentTarget)
+        const name = form.get('name')
+        const quantity = form.get('quantity')
+        const price = form.get('price')
+        const taste = form.get('taste')
+        const category = form.get('category')
+        const photo = form.get('photo')
+        const newCoffee = { name, quantity, price, taste, category, photo }
+        console.log(newCoffee);
+
+        fetch(`http://localhost:5000/coffee/${loadedProduct._id}`, {
+            method: 'PUT',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify(newCoffee)
+        })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data);
+                if (data.modifiedCount > 0) {
+                    swal({
+                        title: "Good job!",
+                        text: "A coffee is updated successfully.",
+                        icon: "success",
+                        button: "Close!",
+                    });
+                    e.target.reset()
+                }
+            })
+    }
+
+    return (
+        <div>
+            <div className="md:w-3/4 lg:w-2/4 mx-auto text-center bg-gray-200 px-5 py-4 my-10 rounded">
+                <div className="my-5">
+                    <h2 className="text-2xl mb-3 text-black">Update Existing Coffee Details</h2>
+                    <p className="text-xs text-black">It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using Content here.</p>
+                </div>
+
+                <div>
+
+                    <form onSubmit={handleUpdateCoffee}>
+                        <div className="flex flex-col md:flex-row gap-5">
+                            <div className="form-control w-full max-w-xs">
+                                <label className="label">
+                                    <span className="label-text">Coffee Name</span>
+                                </label>
+                                <input type="text" name="name" placeholder="Coffee name..." defaultValue={loadedProduct.name} className="input input-bordered w-full max-w-xs" />
+                            </div>
+
+                            <div className="form-control w-full max-w-xs">
+                                <label className="label">
+                                    <span className="label-text">Available Quantity </span>
+                                </label>
+                                <input type="text" name="quantity" defaultValue={loadedProduct.quantity} placeholder="Quantity..." className="input input-bordered w-full max-w-xs" />
+                            </div>
+                        </div>
+
+                        <div className="flex flex-col md:flex-row gap-5 mt-5">
+                            <div className="form-control w-full max-w-xs">
+                                <label className="label">
+                                    <span className="label-text">price</span>
+                                </label>
+                                <input type="text" name="price" defaultValue={loadedProduct.price} placeholder="Price..." className="input input-bordered w-full max-w-xs" />
+                            </div>
+
+                            <div className="form-control w-full max-w-xs">
+                                <label className="label">
+                                    <span className="label-text">Taste</span>
+                                </label>
+                                <input type="text" name="taste" defaultValue={loadedProduct.taste} placeholder="Taste..." className="input input-bordered w-full max-w-xs" />
+                            </div>
+                        </div>
+
+                        <div className="flex flex-col md:flex-row gap-5 mt-5">
+                            <div className="form-control w-full max-w-xs">
+                                <label className="label">
+                                    <span className="label-text">Category</span>
+                                </label>
+                                <input type="text" defaultValue={loadedProduct.category} name="category" placeholder="Category..." className="input input-bordered w-full max-w-xs" />
+                            </div>
+
+                            <div className="form-control w-full max-w-xs">
+                                <label className="label">
+                                    <span className="label-text">Photo URL</span>
+                                </label>
+                                <input type="text" name="photo" defaultValue={loadedProduct.photo} placeholder="Photo url..." className="input input-bordered w-full max-w-xs" />
+                            </div>
+
+                        </div>
+
+                        <button className="text-black bg-[#D2B48C] px-3 py-1 rounded w-full mt-3">Update Coffee</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default UpdateCoffee;
